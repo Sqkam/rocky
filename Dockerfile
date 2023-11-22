@@ -1,18 +1,17 @@
-FROM rockylinux:9
+FROM ubuntu:22.04
 
 # 安装 Shellinabox
-RUN dnf update -y && \
-    dnf install -y openssh-server && \
-   
+RUN apt-get update && \
+    apt-get install -y shellinabox && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # 设置 root 用户的密码为 'root'
-RUN cat >passwd <eof 
-111111
-111111
-eof
+RUN echo 'root:111111' | chpasswd
 
 # 暴露 22 端口
 EXPOSE 22
+EXPOSE 8080
 
 # 启动 Shellinabox
-CMD ["/usr/sbin/sshd"]
+CMD ["/usr/bin/shellinaboxd", "-t", "-s", "/:LOGIN"]
